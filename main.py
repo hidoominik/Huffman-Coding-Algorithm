@@ -1,8 +1,10 @@
 import heapq
+import sys
 from collections import defaultdict
 import turtle
 from tkinter import *
 from tkinter import ttk
+import os
 
 '''
 Huffman('String with more than 2 unique characters')
@@ -182,6 +184,11 @@ class Huffman:
         turtle.mainloop()
 
 
+def restart():
+    python = sys.executable
+    os.execl(python, python, *sys.argv)
+
+
 def gui():
     root = Tk()
     root.title("Huffman coding")
@@ -194,12 +201,14 @@ def gui():
     encode_button = Button(frm, text="Encode!", command=lambda: algorithm(entry_field.get()))
     label2 = Label(frm, text="Text to encode:")
     text_field = Label(frm, width=25, height=1)
-
+    reset_button = Button(frm, text="Reset", command=restart)
     quit_button = Button(frm, text="Quit", command=root.destroy)
     # row 0
     label.grid(column=0, row=0)
     entry_field.grid(column=1, row=0)
     encode_button.grid(column=3, row=0)
+    quit_button.grid(column=5, row=0)
+    reset_button.grid(column=4, row=0)
     # row 1
     label2.grid(column=0, row=1)
     text_field.grid(column=1, row=1)
