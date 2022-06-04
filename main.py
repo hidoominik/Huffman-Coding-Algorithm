@@ -5,6 +5,7 @@ import turtle
 from tkinter import *
 from tkinter import ttk
 import os
+from scipy.stats import entropy
 
 '''
 Huffman('String with more than 2 unique characters')
@@ -12,6 +13,10 @@ Huffman('String with more than 2 unique characters')
 Huffman.print_info() -> print info 
 Huffman.draw_tree() -> draws huffman tree (using turtle)
 '''
+
+
+# ent = 0
+# av_len = 0
 
 
 class Huffman:
@@ -44,14 +49,32 @@ class Huffman:
         return frequency, huff
 
     def print_info(self):
+        global ent
+        global av_len
+        global tab
+
         frequency, huff = self.extract_info()
-        print("Symbol".ljust(10) + "Weight".ljust(10) + "Huffman Code")
-        label_symbol = Label()
+        print("Symbol".ljust(10) + "Weight".ljust(10) + "Probability".ljust(10) + "Huffman Code")
+        prob_table = []
+
+        av_len = 0
+        # tab = [("Symbol", "Weight", "Probability", "Huffman Code")]
         for p in huff:
+            prob = frequency[p[0]] / sum(frequency.values()) * 100
+            av_len = av_len + (prob / 100 * len(p[1]))
+            prob_table.append(prob)
+
             if p[0] == ' ':
-                print("space".ljust(10) + str(frequency[p[0]]).ljust(10) + p[1])
+                print("space".ljust(10) + str(frequency[p[0]]).ljust(10) + str('{0:.2f}'.format(prob)).ljust(10) + p[1])
+                # tab.append((("space", frequency[p[0]]), '{0:.2f}'.format(prob), p[1]))
                 continue
-            print(p[0].ljust(10) + str(frequency[p[0]]).ljust(10) + p[1])
+            print(p[0].ljust(10) + str(frequency[p[0]]).ljust(10) + str('{0:.2f}'.format(prob)).ljust(10) + p[1])
+            # tab.append((p[0], frequency[p[0]], '{0:.2f}'.format(prob), p[1]))
+
+        ent = entropy(prob_table, base=2)
+
+        print(av_len)
+        print(ent)
 
     ###drawing stuff###
     def turtle_space(self):
@@ -189,38 +212,42 @@ def restart():
     os.execl(python, python, *sys.argv)
 
 
-def gui():
-    root = Tk()
-    root.title("Huffman coding")
-    frm = ttk.Frame(root, padding=30)
-
-    frm.grid()
-
-    label = Label(frm, text="Insert text to encode: ")
-    entry_field = Entry(frm, width=30)
-    encode_button = Button(frm, text="Encode!", command=lambda: algorithm(entry_field.get()))
-    label2 = Label(frm, text="Text to encode:")
-    text_field = Label(frm, width=25, height=1)
-    reset_button = Button(frm, text="Reset", command=restart)
-    quit_button = Button(frm, text="Quit", command=root.destroy)
-    # row 0
-    label.grid(column=0, row=0)
-    entry_field.grid(column=1, row=0)
-    encode_button.grid(column=3, row=0)
-    quit_button.grid(column=5, row=0)
-    reset_button.grid(column=4, row=0)
-    # row 1
-    label2.grid(column=0, row=1)
-    text_field.grid(column=1, row=1)
-    # row 2
-    root.mainloop()
-
-
 def algorithm(text):
     huffman = Huffman(text)
     huffman.print_info()
+
+    label3.config(text='{0:.2f}'.format(ent))
+    label4.config(text='{0:.2f}'.format(av_len))
+    text_field.config(text=entry_field.get())
+
+    label3.pack()
+    label4.pack()
+    text_field.pack()
+
     huffman.draw_tree()
 
 
-if __name__ == '__main__':
-    gui()
+root = Tk()
+root.geometry('400x250')
+root.title("Huffman coding")
+frm = ttk.Frame(root, padding=30)
+
+label = Label(root, text="Insert text to encode: ")
+label.pack()
+entry_field = Entry(root, width=30)
+entry_field.pack()
+label3 = Label(root)
+label3.pack()
+label4 = Label(root)
+label4.pack()
+encode_button = Button(root, text="Encode!", command=lambda: algorithm(entry_field.get()))
+encode_button.pack()
+label2 = Label(root, text="Text to encode:")
+label2.pack()
+text_field = Label(root, width=25, height=1)
+text_field.pack()
+reset_button = Button(root, text="Reset", command=restart)
+reset_button.pack()
+quit_button = Button(root, text="Quit", command=root.destroy)
+quit_button.pack()
+root.mainloop()
