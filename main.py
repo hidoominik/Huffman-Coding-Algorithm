@@ -54,11 +54,11 @@ class Huffman:
         global tab
 
         frequency, huff = self.extract_info()
-        print("Symbol".ljust(10) + "Weight".ljust(10) + "Probability".ljust(10) + "Huffman Code")
+        print("Symbol".ljust(10) + "Waga".ljust(10) + "Prawdopodobieństwo".ljust(10) + "Kod Huffmana")
         prob_table = []
 
         av_len = 0
-        # tab = [("Symbol", "Weight", "Probability", "Huffman Code")]
+        tab = [("Symbol", "Waga", "Prawdopodobieństwo", "Kod Huffmana")]
         for p in huff:
             prob = frequency[p[0]] / sum(frequency.values()) * 100
             av_len = av_len + (prob / 100 * len(p[1]))
@@ -66,10 +66,10 @@ class Huffman:
 
             if p[0] == ' ':
                 print("space".ljust(10) + str(frequency[p[0]]).ljust(10) + str('{0:.2f}'.format(prob)).ljust(10) + p[1])
-                # tab.append((("space", frequency[p[0]]), '{0:.2f}'.format(prob), p[1]))
+                tab.append((("space", frequency[p[0]]), '{0:.2f}'.format(prob), p[1]))
                 continue
             print(p[0].ljust(10) + str(frequency[p[0]]).ljust(10) + str('{0:.2f}'.format(prob)).ljust(10) + p[1])
-            # tab.append((p[0], frequency[p[0]], '{0:.2f}'.format(prob), p[1]))
+            tab.append((p[0], frequency[p[0]], '{0:.2f}'.format(prob), p[1]))
 
         ent = entropy(prob_table, base=2)
 
@@ -127,8 +127,8 @@ class Huffman:
         turtle.title('huffman tree')
         # turtle.tracer(0) #to make it instantaneous
         turtle.speed(0)
-        turtle.color("white")
-        turtle.bgcolor("black")
+        turtle.color("#ccffcc")
+        turtle.bgcolor("#006600")
         turtle.setup(width=1.0, height=1.0)
 
     def tp(self):
@@ -213,41 +213,78 @@ def restart():
 
 
 def algorithm(text):
+    encode_button.config(bg="#ffcccc", state=DISABLED, text="Zakodowano.")
+    reset_button.config(bg="#ccffcc")
+    draw_tree_button.config(state=NORMAL)
     huffman = Huffman(text)
     huffman.print_info()
 
-    label3.config(text='{0:.2f}'.format(ent))
-    label4.config(text='{0:.2f}'.format(av_len))
+    label3.config(text='Entropia:  ' + '{0:.2f}'.format(ent))
+    label4.config(text=' Średnia długość słowa kodowego:  ' + '{0:.2f}'.format(av_len))
     text_field.config(text=entry_field.get())
+    frm1 = Frame(root, padx=10)
+    frm2 = Frame(root, padx=10)
+    frm3 = Frame(root, padx=10)
+    frm4 = Frame(root, padx=10)
+
+    frm1.pack(side=LEFT)
+    frm2.pack(side=LEFT)
+    frm3.pack(side=LEFT)
+    frm4.pack(side=LEFT)
+    for i in tab:
+        loopLabel1 = Label(frm1, text=str(i[0]))
+        loopLabel2 = Label(frm2, text=str(i[1]))
+        loopLabel3 = Label(frm3, text=str(i[2]))
+        loopLabel4 = Label(frm4, text=str(i[3]))
+
+        loopLabel1.pack()
+        loopLabel2.pack()
+        loopLabel3.pack()
+        loopLabel4.pack()
 
     label3.pack()
     label4.pack()
     text_field.pack()
+    print(tab)
 
+
+
+def drawTree(text):
+    draw_tree_button.config(state=DISABLED, text="Drzewo narysowane.")
+    huffman = Huffman(text)
+    huffman.print_info()
     huffman.draw_tree()
 
 
 root = Tk()
-root.geometry('400x250')
-root.title("Huffman coding")
-frm = ttk.Frame(root, padding=30)
+root.geometry('400x500')
+root.title("Kodowanie Huffmana")
 
-label = Label(root, text="Insert text to encode: ")
-label.pack()
+frm = ttk.Frame(root, width=450, height=45)
+
+label = Label(root, text="Wprowadź tekst do zakodowania: ")
 entry_field = Entry(root, width=30)
-entry_field.pack()
+label2 = Label(root, text="Tekst do zakodowania:")
+text_field = Label(root, fg="blue", width=25, height=1)
 label3 = Label(root)
-label3.pack()
 label4 = Label(root)
-label4.pack()
-encode_button = Button(root, text="Encode!", command=lambda: algorithm(entry_field.get()))
-encode_button.pack()
-label2 = Label(root, text="Text to encode:")
+
+encode_button = Button(root, bg="#ccffcc", text="Zakoduj!", width=50, command=lambda: algorithm(entry_field.get()))
+reset_button = Button(root, text="Reset", width=50, command=restart)
+draw_tree_button = Button(root, state=DISABLED, text="Rysuj drzewo", width=50,
+                          command=lambda: drawTree(entry_field.get()))
+quit_button = Button(root, text="Wyjście", width=50, command=root.destroy)
+
+label.pack()
+entry_field.pack()
 label2.pack()
-text_field = Label(root, width=25, height=1)
 text_field.pack()
-reset_button = Button(root, text="Reset", command=restart)
+
+label3.pack()
+label4.pack()
+encode_button.pack()
+draw_tree_button.pack()
 reset_button.pack()
-quit_button = Button(root, text="Quit", command=root.destroy)
 quit_button.pack()
+
 root.mainloop()
