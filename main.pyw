@@ -106,7 +106,7 @@ class Huffman:
         turtle.right(90)
 
     def init_turtle_screen(self):
-        turtle.title('huffman tree')
+        turtle.title('Drzewo Huffmana')
         turtle.speed(0)
         turtle.color("#ccffcc")
         turtle.bgcolor("#006600")
@@ -223,7 +223,7 @@ def drawTree(text):
 
 root = Tk()
 root.geometry('500x500')
-root.resizable(True, False)
+#root.resizable(True, False)
 root.title("Kodowanie Huffmana")
 
 frm = Frame(root, width=450, height=45)
