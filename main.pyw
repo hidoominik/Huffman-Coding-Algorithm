@@ -53,7 +53,7 @@ class Huffman:
             prob_table.append(prob)
 
             if p[0] == ' ':
-                tab.append(("space", frequency[p[0]], '{0:.2f}'.format(prob), p[1]))
+                tab.append(("spacja", frequency[p[0]], '{0:.2f}'.format(prob), p[1]))
                 continue
             tab.append((p[0], frequency[p[0]], '{0:.2f}'.format(prob), p[1]))
 
@@ -166,7 +166,7 @@ class Huffman:
 
             if type(char) is str:
                 if char == ' ':
-                    self.write_uncircled("space", 5)
+                    self.write_uncircled("spacja", 5)
                 self.write_uncircled(char, len(char))
             else:
                 self.write_circled(char, len(str(char)))
