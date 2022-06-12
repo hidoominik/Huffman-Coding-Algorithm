@@ -1,9 +1,7 @@
 import heapq
-import sys
 from collections import defaultdict
 import turtle
 from tkinter import *
-from tkinter import ttk
 import os
 from scipy.stats import entropy
 
@@ -46,16 +44,18 @@ class Huffman:
         prob_table = []
 
         av_len = 0
-        tab = [("Symbol", "Waga", "Prawdopodobieństwo [%]", "Kod Huffmana")]
+        tab = [("Symbol".ljust(10) + "Waga".ljust(10) + "Prawdopodobieństwo [%]".ljust(25) + "Kod Huffmana")]
         for p in huff:
             prob = frequency[p[0]] / sum(frequency.values()) * 100
             av_len = av_len + (prob / 100 * len(p[1]))
             prob_table.append(prob)
 
             if p[0] == ' ':
-                tab.append(("spacja", frequency[p[0]], '{0:.2f}'.format(prob), p[1]))
+                tab.append(("spacja".ljust(10) + str(frequency[p[0]]).ljust(10) + '{0:.2f}'.format(prob).ljust(25) +
+                            str(p[1])).ljust(10))
                 continue
-            tab.append((p[0], frequency[p[0]], '{0:.2f}'.format(prob), p[1]))
+            tab.append((str(p[0]).ljust(10) + str(frequency[p[0]]).ljust(10) + '{0:.2f}'.format(prob).ljust(25) +
+                        str(p[1])).ljust(10))
 
         ent = entropy(prob_table, base=2)
 
@@ -166,7 +166,7 @@ class Huffman:
 
             if type(char) is str:
                 if char == ' ':
-                    self.write_uncircled("spacja", 5)
+                    self.write_uncircled("space", 5)
                 self.write_uncircled(char, len(char))
             else:
                 self.write_circled(char, len(str(char)))
@@ -196,29 +196,18 @@ def algorithm(text):
     label3.config(text='Entropia:  ' + '{0:.2f}'.format(ent))
     label4.config(text=' Średnia długość słowa kodowego:  ' + '{0:.2f}'.format(av_len))
     text_field.config(text=entry_field.get())
-    frame = Frame(root, padx=10)
 
-    frm1 = Frame(frame, padx=10)
-    frm2 = Frame(frame, padx=10)
-    frm3 = Frame(frame, padx=10)
-    frm4 = Frame(frame, padx=10)
+    scroll_bar = Scrollbar(root)
+    scroll_bar.pack(side=RIGHT, fill=Y)
 
-    frame.pack(side=BOTTOM)
-    frm1.pack(side=LEFT)
-    frm2.pack(side=LEFT)
-    frm3.pack(side=LEFT)
-    frm4.pack(side=LEFT)
-    
+    t = Text(root, padx=10, width=55, height=25, wrap=NONE, yscrollcommand=scroll_bar.set)
+
     for i in tab:
-        loopLabel1 = Label(frm1, text=str(i[0]))
-        loopLabel2 = Label(frm2, text=str(i[1]))
-        loopLabel3 = Label(frm3, text=str(i[2]))
-        loopLabel4 = Label(frm4, text=str(i[3]))
+        t.insert(END, i + "\n")
 
-        loopLabel1.pack()
-        loopLabel2.pack()
-        loopLabel3.pack()
-        loopLabel4.pack()
+    t.configure(state=DISABLED)
+    t.pack(side=TOP, fill=X)
+    scroll_bar.config(command=t.yview)
 
     label3.pack()
     label4.pack()
@@ -233,10 +222,11 @@ def drawTree(text):
 
 
 root = Tk()
-root.geometry('400x500')
+root.geometry('500x500')
+root.resizable(True, False)
 root.title("Kodowanie Huffmana")
 
-frm = ttk.Frame(root, width=450, height=45)
+frm = Frame(root, width=450, height=45)
 
 label = Label(root, text="Wprowadź tekst do zakodowania: ")
 entry_field = Entry(root, width=30)
