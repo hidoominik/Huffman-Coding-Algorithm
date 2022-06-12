@@ -207,9 +207,11 @@ class Huffman:
         turtle.mainloop()
 
 
-def restart():
+def restart(root):
     python = sys.executable
-    os.execl(python, python, *sys.argv)
+    root.destroy()
+    #os.execl(python, python, *sys.argv)
+    os.startfile("main.pyw")
 
 
 def algorithm(text):
@@ -248,7 +250,6 @@ def algorithm(text):
     print(tab)
 
 
-
 def drawTree(text):
     draw_tree_button.config(state=DISABLED, text="Drzewo narysowane.")
     huffman = Huffman(text)
@@ -270,7 +271,7 @@ label3 = Label(root)
 label4 = Label(root)
 
 encode_button = Button(root, bg="#ccffcc", text="Zakoduj!", width=50, command=lambda: algorithm(entry_field.get()))
-reset_button = Button(root, text="Reset", width=50, command=restart)
+reset_button = Button(root, text="Reset", width=50, command=lambda: restart(root))
 draw_tree_button = Button(root, state=DISABLED, text="Rysuj drzewo", width=50,
                           command=lambda: drawTree(entry_field.get()))
 quit_button = Button(root, text="Wyjście", width=50, command=root.destroy)
