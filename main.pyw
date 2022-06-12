@@ -7,17 +7,6 @@ from tkinter import ttk
 import os
 from scipy.stats import entropy
 
-'''
-Huffman('String with more than 2 unique characters')
-
-Huffman.print_info() -> print info 
-Huffman.draw_tree() -> draws huffman tree (using turtle)
-'''
-
-
-# ent = 0
-# av_len = 0
-
 
 class Huffman:
     def __init__(self, data) -> None:
@@ -54,29 +43,22 @@ class Huffman:
         global tab
 
         frequency, huff = self.extract_info()
-        print("Symbol".ljust(10) + "Waga".ljust(10) + "Prawdopodobieństwo".ljust(10) + "Kod Huffmana")
         prob_table = []
 
         av_len = 0
-        tab = [("Symbol", "Waga", "Prawdopodobieństwo", "Kod Huffmana")]
+        tab = [("Symbol", "Waga", "Prawdopodobieństwo [%]", "Kod Huffmana")]
         for p in huff:
             prob = frequency[p[0]] / sum(frequency.values()) * 100
             av_len = av_len + (prob / 100 * len(p[1]))
             prob_table.append(prob)
 
             if p[0] == ' ':
-                print("space".ljust(10) + str(frequency[p[0]]).ljust(10) + str('{0:.2f}'.format(prob)).ljust(10) + p[1])
-                tab.append((("space", frequency[p[0]]), '{0:.2f}'.format(prob), p[1]))
+                tab.append(("space", frequency[p[0]], '{0:.2f}'.format(prob), p[1]))
                 continue
-            print(p[0].ljust(10) + str(frequency[p[0]]).ljust(10) + str('{0:.2f}'.format(prob)).ljust(10) + p[1])
             tab.append((p[0], frequency[p[0]], '{0:.2f}'.format(prob), p[1]))
 
         ent = entropy(prob_table, base=2)
 
-        print(av_len)
-        print(ent)
-
-    ###drawing stuff###
     def turtle_space(self):
         turtle.penup()
         turtle.forward(20)
@@ -125,7 +107,6 @@ class Huffman:
 
     def init_turtle_screen(self):
         turtle.title('huffman tree')
-        # turtle.tracer(0) #to make it instantaneous
         turtle.speed(0)
         turtle.color("#ccffcc")
         turtle.bgcolor("#006600")
@@ -136,14 +117,11 @@ class Huffman:
         turtle.goto(self.origin)
         turtle.pendown()
 
-    ###end of drawing stuff###
-
-    # data processing
     def huffman_tree_info(self):
         frequency, huff = self.extract_info()
 
-        huff_frequency = [[frequency[symbol], binary] for symbol, binary in huff]  # making addition simpler
-        parent_nodes = []  # for drawing the parent nodes
+        huff_frequency = [[frequency[symbol], binary] for symbol, binary in huff]
+        parent_nodes = []
 
         huff_frequency.sort(key=lambda x: len(x[1]), reverse=True)
 
@@ -155,7 +133,7 @@ class Huffman:
                     parent_value = freq + current_binary_value[0]
                     huff_frequency.append([parent_value, binary[:-1]])
 
-                    parent_nodes.append([parent_value, binary[:-1]])  # objective
+                    parent_nodes.append([parent_value, binary[:-1]])
 
                     huff_frequency.remove(current_binary_value)
                     huff_frequency.remove([freq, binary])
@@ -163,10 +141,7 @@ class Huffman:
             huff_frequency.sort(key=lambda x: len(x[1]), reverse=True)
 
         huffman_tree_data = huff + parent_nodes
-        '''
-        if first element of list is str: it's a character
-        if first element of list is int: it's a parent node
-        '''
+
         return huffman_tree_data
 
     def draw_tree(self):
@@ -178,7 +153,6 @@ class Huffman:
 
         huffman_tree_data = self.huffman_tree_info()
 
-        # starting off with main branch
         self.tp()
         turtle.right(90)
         self.write_circled(len(self.data), 2)
@@ -208,9 +182,7 @@ class Huffman:
 
 
 def restart(root):
-    python = sys.executable
     root.destroy()
-    #os.execl(python, python, *sys.argv)
     os.startfile("main.pyw")
 
 
@@ -224,15 +196,19 @@ def algorithm(text):
     label3.config(text='Entropia:  ' + '{0:.2f}'.format(ent))
     label4.config(text=' Średnia długość słowa kodowego:  ' + '{0:.2f}'.format(av_len))
     text_field.config(text=entry_field.get())
-    frm1 = Frame(root, padx=10)
-    frm2 = Frame(root, padx=10)
-    frm3 = Frame(root, padx=10)
-    frm4 = Frame(root, padx=10)
+    frame = Frame(root, padx=10)
 
+    frm1 = Frame(frame, padx=10)
+    frm2 = Frame(frame, padx=10)
+    frm3 = Frame(frame, padx=10)
+    frm4 = Frame(frame, padx=10)
+
+    frame.pack(side=BOTTOM)
     frm1.pack(side=LEFT)
     frm2.pack(side=LEFT)
     frm3.pack(side=LEFT)
     frm4.pack(side=LEFT)
+    
     for i in tab:
         loopLabel1 = Label(frm1, text=str(i[0]))
         loopLabel2 = Label(frm2, text=str(i[1]))
@@ -247,7 +223,6 @@ def algorithm(text):
     label3.pack()
     label4.pack()
     text_field.pack()
-    print(tab)
 
 
 def drawTree(text):
@@ -266,7 +241,7 @@ frm = ttk.Frame(root, width=450, height=45)
 label = Label(root, text="Wprowadź tekst do zakodowania: ")
 entry_field = Entry(root, width=30)
 label2 = Label(root, text="Tekst do zakodowania:")
-text_field = Label(root, fg="blue", width=25, height=1)
+text_field = Label(root, fg="blue", height=1, padx=5)
 label3 = Label(root)
 label4 = Label(root)
 
