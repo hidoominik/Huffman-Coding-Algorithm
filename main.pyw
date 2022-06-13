@@ -231,7 +231,7 @@ frm = Frame(root, width=450, height=45)
 label = Label(root, text="Wprowadź tekst do zakodowania: ")
 entry_field = Entry(root, width=30)
 label2 = Label(root, text="Tekst do zakodowania:")
-text_field = Label(root, fg="blue", height=1, padx=5)
+text_field = Label(root, fg="blue", padx=5, wraplength=300, width=300, justify=CENTER)
 label3 = Label(root)
 label4 = Label(root)
 
